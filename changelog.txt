@@ -1,0 +1,23 @@
+*** CyberSource Secure Acceptance Silent Order Post Gateway Changelog ***
+
+2015.09.03 - version 1.2.0
+ * Minor fixes
+ * Fixed bug #2 Device fingerprint
+ * Fixed bug #3 IP not showing on Cybersource
+ * Removed support for 033: Visa Electron card due to CyberSource Secure Acceptance processing through VisaNet. VisaNet treats all Visa cards the same
+ * Increased the card expiration date range upto 10 years
+ * Added Autocomplete Orders options
+ * Rewritten the entire plugin update function to support GitHub hosting
+
+2016.08.11 - version 1.1.2
+ * Fixed bug #1 Corrected the Return Url Problems
+ 
+2015.05.14 - version 1.1.1
+ * Added a feature for Update Notifications for new plug-in releases
+
+2015.05.04 - version 1.1.0
+ * Removed Deprecated functions
+ * Removed submit to self form which was a work around to generate the HASH_MAC/Signature value
+
+2014.03.14 - version 1.0.0
+ * First CyberSource Secure Acceptance Silent Order Post Release
