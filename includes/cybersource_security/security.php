@@ -1,6 +1,6 @@
 <?php
 /**
- * CyberSource Secure Acceptance SOP - Security Functions
+ * CyberSource Secure Acceptance WM - Security Functions
  * Secret key signs the transaction data and is required for each transaction.
  * Enter your security key into the SECRET_KEY (getSecretKey() function) field.
  *
@@ -23,7 +23,7 @@ function getSecretKey()
 {
 	global $woocommerce;
 	$gateways = $woocommerce->payment_gateways->payment_gateways();
-	return $gateways['cybersource_secure_acceptance_sop']->get_secret_key();
+	return $gateways['cybersource_secure_acceptance_wm']->get_secret_key();
 }
 
 define ('HMAC_SHA256', 'sha256');

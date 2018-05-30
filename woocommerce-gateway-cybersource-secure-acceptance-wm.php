@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Plugin Name: WooCommerce CyberSource Secure Acceptance SOP Gateway - Developement
+ * Plugin Name: WooCommerce CyberSource Secure Acceptance WM Gateway - Developement
  * Plugin URI: 
- * Description: Adds the CyberSource Secure Acceptance Silent Order Post (SOP) payment gateway to your WooCommerce website. Requires an SSL certificate.
+ * Description: Adds the CyberSource Secure Acceptance Web/Mobile (WM) payment gateway to your WooCommerce website. Requires an SSL certificate.
  * Author: Mikochi Mabingo
  * Author URI: 
  * Version: 1.2.0-beta
@@ -14,11 +14,11 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * The WC_Cybersource_Secure_Acceptance_SOP global object
- * @name $wc_cybersource_secure_acceptance_sop
- * @global WC_Cybersource_Secure_Acceptance_SOP $GLOBALS['wc_cybersource_secure_acceptance_sop']
+ * The WC_Cybersource_Secure_Acceptance_WM global object
+ * @name $wc_cybersource_secure_acceptance_wm
+ * @global WC_Cybersource_Secure_Acceptance_WM $GLOBALS['wc_cybersource_secure_acceptance_wm']
  */
-$GLOBALS['wc_cybersource_secure_acceptance_sop'] = new WC_Cybersource_Secure_Acceptance_SOP();
+$GLOBALS['wc_cybersource_secure_acceptance_wm'] = new WC_Cybersource_Secure_Acceptance_WM();
 
 
 /**
@@ -35,14 +35,14 @@ $GLOBALS['wc_cybersource_secure_acceptance_sop'] = new WC_Cybersource_Secure_Acc
  * Expiration Date: any date in the future
  * Card Security Code: any 3 digits
  */
-class WC_Cybersource_Secure_Acceptance_SOP
+class WC_Cybersource_Secure_Acceptance_WM
 {
 
 	/** class name to load as gateway */
-	const GATEWAY_CLASS_NAME = 'WC_Gateway_Cybersource_Secure_Acceptance_SOP';
+	const GATEWAY_CLASS_NAME = 'WC_Gateway_Cybersource_Secure_Acceptance_WM';
 
 	/** gateway id */
-	const GATEWAY_ID = 'cybersource_secure_acceptance_sop';
+	const GATEWAY_ID = 'cybersource_secure_acceptance_wm';
 	
 	/** plugin text domain */
 	const TEXT_DOMAIN = 'wc-cybersource';	
@@ -60,7 +60,7 @@ class WC_Cybersource_Secure_Acceptance_SOP
 	 * The custom receipt page to redirect to after a transaction.
 	 * This is not guaranteed to work, so it's important to configure the setting
 	 * in the CyberSource Admin-> Tools & Settings -> Profiles -> Profile Name -> Customer Response Pages
-	 * Receipt Page with https://www.example.com/?wc-api=wc_gateway_cybersource_secure_acceptance_sop_response
+	 * Receipt Page with https://www.example.com/?wc-api=wc_gateway_cybersource_secure_acceptance_wm_response
 	 * @var string
 	 */
 	private $response_url;
@@ -102,7 +102,7 @@ class WC_Cybersource_Secure_Acceptance_SOP
 		* these handlers would be more effort than this gateway can justify
 		* with its current sales figures
 		*/
-		$this->response_url = add_query_arg( 'wc-api', 'wc_gateway_cybersource_secure_acceptance_sop_response', home_url( '/' ) );
+		$this->response_url = add_query_arg( 'wc-api', 'wc_gateway_cybersource_secure_acceptance_wm_response', home_url( '/' ) );
 
 		if ( is_ssl() || 'yes' == get_option( 'woocommerce_force_ssl_checkout' ) )
 		{
@@ -110,7 +110,7 @@ class WC_Cybersource_Secure_Acceptance_SOP
 		}
 	
 		// Payment listener/API hook
-		add_action( 'woocommerce_api_wc_gateway_cybersource_secure_acceptance_sop_response', array( $this, 'cybersource_relay_response' ) );
+		add_action( 'woocommerce_api_wc_gateway_cybersource_secure_acceptance_wm_response', array( $this, 'cybersource_relay_response' ) );
 	}
 
 
@@ -121,7 +121,7 @@ class WC_Cybersource_Secure_Acceptance_SOP
 	{
 
 		// CyberSource gateway
-		require_once( 'includes/class-wc-gateway-cybersource-secure-acceptance-sop.php' );
+		require_once( 'includes/class-wc-gateway-cybersource-secure-acceptance-wm.php' );
 
 		// Add class to WC Payment Methods
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'load_gateway' ) );
@@ -176,8 +176,8 @@ class WC_Cybersource_Secure_Acceptance_SOP
 	 */
 	public function cybersource_relay_response()
 	{
-		$wc_gateway_cybersource_secure_acceptance_sop = new WC_Gateway_Cybersource_Secure_Acceptance_SOP();
-		$wc_gateway_cybersource_secure_acceptance_sop->cybersource_response();
+		$wc_gateway_cybersource_secure_acceptance_wm = new WC_Gateway_Cybersource_Secure_Acceptance_WM();
+		$wc_gateway_cybersource_secure_acceptance_wm->cybersource_response();
 	}
 
 	
@@ -192,7 +192,7 @@ class WC_Cybersource_Secure_Acceptance_SOP
 	 */
 	public function order_meta_box_transaction_link( $post_id )
 	{
-		global $woocommerce, $wc_cybersource_secure_acceptance_sop;
+		global $woocommerce, $wc_cybersource_secure_acceptance_wm;
 		// this action is overloaded
 		if ( is_array( $post_id ) ) return $post_id;
 
@@ -200,8 +200,8 @@ class WC_Cybersource_Secure_Acceptance_SOP
 
 		if ( self::GATEWAY_ID == $order->payment_method )
 		{
-			$wc_gateway_cybersource_secure_acceptance_sop = new WC_Gateway_Cybersource_Secure_Acceptance_SOP();
-			$wc_gateway_cybersource_secure_acceptance_sop->order_meta_box_transaction_link( $order );
+			$wc_gateway_cybersource_secure_acceptance_wm = new WC_Gateway_Cybersource_Secure_Acceptance_WM();
+			$wc_gateway_cybersource_secure_acceptance_wm->order_meta_box_transaction_link( $order );
 		}
 	}
 

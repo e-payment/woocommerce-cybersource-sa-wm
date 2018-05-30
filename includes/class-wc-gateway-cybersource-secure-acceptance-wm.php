@@ -1,9 +1,9 @@
 <?php
 
 /**
- * WooCommerce CyberSource Secure Acceptance SOP
+ * WooCommerce CyberSource Secure Acceptance WM
  *
- * @Class	WC_Gateway_Cybersource_Secure_Acceptance_SOP
+ * @Class	WC_Gateway_Cybersource_Secure_Acceptance_WM
  *
  * This source file is subject to the GNU General Public License v3.0
  * that is bundled with this package in the file license.txt.
@@ -12,7 +12,7 @@
  *
  * DISCLAIMER
  *
- * Do not edit or add to this file if you wish to upgrade WooCommerce CyberSource Secure Acceptance SOP to newer
+ * Do not edit or add to this file if you wish to upgrade WooCommerce CyberSource Secure Acceptance WM to newer
  * versions in the future.
  *
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
@@ -23,12 +23,12 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * CyberSource Gateway class
  */
-class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
+class WC_Gateway_Cybersource_Secure_Acceptance_WM extends WC_Payment_Gateway {
 
 	// CyberSource Standard Transaction Endpoints
-	private $test_url = "https://testsecureacceptance.cybersource.com/silent/pay";
-	//private $test_url = "http://localhost/php_sop/receipt.php";
-	private $live_url = "https://secureacceptance.cybersource.com/silent/pay";
+	private $test_url = "https://testsecureacceptance.cybersource.com/pay";
+	//private $test_url = "http://localhost/php_wm/receipt.php";
+	private $live_url = "https://secureacceptance.cybersource.com/pay";
 
 
 	// CyberSource Decision Manager Device Fingerprinting Organisation IDs
@@ -53,16 +53,16 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 
 		$this->plugin_path = untrailingslashit( plugin_dir_path( __FILE__ ) );
 
-		$this->id                 = WC_Cybersource_Secure_Acceptance_SOP::GATEWAY_ID;
-		$this->method_title       = __( 'CyberSource Secure Acceptance SOP', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN );
-		$this->method_description = __( 'CyberSource Secure Acceptance SOP (Silent Order Post) handles all the steps in the secure transaction while remaining virtually transparent. ' .
-		                                'Payment data is passed from the checkout to CyberSource for processing without ever passing through your server, simplifying PCI compliance.', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN );
+		$this->id                 = WC_Cybersource_Secure_Acceptance_WM::GATEWAY_ID;
+		$this->method_title       = __( 'CyberSource Secure Acceptance WM', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN );
+		$this->method_description = __( 'CyberSource Secure Acceptance WM (Web/Mobile) handles all the steps in the secure transaction while remaining virtually transparent. ' .
+		                                'Payment data is passed from the checkout to CyberSource for processing without ever passing through your server, simplifying PCI compliance.', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN );
 
 		// to set up the images icon for your shop, use the included images/cards.png
 		// for the card images you accept, and hook into this filter with a return
 		// value like: plugins_url( '/images/cards.png', __FILE__ );
 
-		$this->icon               = apply_filters( 'woocommerce_cybersource_secure_acceptance_sop_icon', '' );
+		$this->icon               = apply_filters( 'woocommerce_cybersource_secure_acceptance_wm_icon', '' );
 
 		// actually this gateway does not have any payment fields, but unfortunately
 		// it seems necessary to set this to true so that the payment_fields()
@@ -80,7 +80,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 			'003' => 'American Express',
 			'042' => 'Maestro Int\'l'
 		);
-		$this->card_type_options = apply_filters( 'woocommerce_cybersource_secure_acceptance_sop_card_types', $default_card_type_options );
+		$this->card_type_options = apply_filters( 'woocommerce_cybersource_secure_acceptance_wm_card_types', $default_card_type_options );
 
 		// Load the form fields.
 		$this->init_form_fields();
@@ -114,7 +114,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 		$this->sslseal          		= isset( $this->settings['sslseal'] ) ? $this->settings['sslseal'] : 'no';
 		$this->banklogo         		= isset( $this->settings['banklogo'] ) ? $this->settings['banklogo'] : 'no';
 
-		if ( $this->is_test_mode() ) $this->description . ' ' . __( 'TEST MODE ENABLED', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN );
+		if ( $this->is_test_mode() ) $this->description . ' ' . __( 'TEST MODE ENABLED', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN );
 
 		// Payment form hook
 		add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'payment_page' ) );
@@ -149,7 +149,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 	 */
 	function get_icon()
 	{
-		global $woocommerce, $wc_cybersource_secure_acceptance_sop;
+		global $woocommerce, $wc_cybersource_secure_acceptance_wm;
 
 		$icon = '';
 		if ( $this->icon )
@@ -163,9 +163,9 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 			$icon = '';
 			foreach ( $this->card_type as $card_type )
 			{
-				if ( file_exists( $wc_cybersource_secure_acceptance_sop->plugin_path() . '/images/card-' . strtolower( $card_type ) . '.png' ) )
+				if ( file_exists( $wc_cybersource_secure_acceptance_wm->plugin_path() . '/images/card-' . strtolower( $card_type ) . '.png' ) )
 				{
-						$icon .= '<img src="' . WC_HTTPS::force_https_url( $wc_cybersource_secure_acceptance_sop->plugin_url() . '/images/card-' . strtolower( $card_type ) . '.png' ) . '" alt="' . strtolower( $card_type ) . '" />';
+						$icon .= '<img src="' . WC_HTTPS::force_https_url( $wc_cybersource_secure_acceptance_wm->plugin_url() . '/images/card-' . strtolower( $card_type ) . '.png' ) . '" alt="' . strtolower( $card_type ) . '" />';
 				}
 			}
 		}
@@ -183,7 +183,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 	{
 		parent::payment_fields();
 		?>
-		<style type="text/css">#payment ul.payment_methods li label[for='payment_method_cybersource_secure_acceptance_sop'] img:nth-child(n+2) { margin-left:1px; }</style>
+		<style type="text/css">#payment ul.payment_methods li label[for='payment_method_cybersource_secure_acceptance_wm'] img:nth-child(n+2) { margin-left:1px; }</style>
 <?php
 	}
 
@@ -211,7 +211,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 
 	/**
 	 * Payment page for showing the payment form which sends data to cybersource.
-	 * Secure Acceptance Silent Order Post has the unfortunate consequence of very visibly
+	 * Secure Acceptance Web/Mobile has the unfortunate consequence of very visibly
 	 * sending the browser to an empty page on the cybersource server while
 	 * the credit card is processed, before redirecting back to this server.
 	 *
@@ -220,7 +220,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 	public function payment_page( $order_id )
 	{
 
-		global $woocommerce, $wc_cybersource_secure_acceptance_sop;
+		global $woocommerce, $wc_cybersource_secure_acceptance_wm;
 
 		// Include the Security file that is used to sign the API fields
 		require_once( 'cybersource_security/security.php' );
@@ -303,11 +303,11 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 		// Get the order
 		$order = wc_get_order( $order_id );
 
-		echo wpautop( __( 'Enter your Card details below.', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ) );
+		echo wpautop( __( 'Enter your Card details below.', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ) );
 		
 		if ( $this->is_test_mode() )
 		{
-			echo "<p style=\"color: #FF0000;\"><strong>" . __( 'TEST MODE ENABLED', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ) . "</strong></p>\n";
+			echo "<p style=\"color: #FF0000;\"><strong>" . __( 'TEST MODE ENABLED', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ) . "</strong></p>\n";
 		}
 		
 		/**
@@ -316,7 +316,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 		 * This is were we submit the form fileds to CyberSource as per CyberSource API
 		 */
 ?>
-	<form action="<?php echo $this->get_action_url(); ?>" method="POST" class="checkout_cybersource_sop" >
+	<form action="<?php echo $this->get_action_url(); ?>" method="POST" class="checkout_cybersource_wm" >
 
 <?php
 			// Iterate and list the fields to post to CyberSource Endpoint url
@@ -339,18 +339,18 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 		<fieldset>
 			<?php if ( $this->description ) echo "<p>{$this->description}</p>"; ?>
 			<p class="form-row form-row-first">
-				<label for="card_number"><?php _e( 'Credit Card Number', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?> <span class="required">*</span></label>
+				<label for="card_number"><?php _e( 'Credit Card Number', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?> <span class="required">*</span></label>
 				<input id="card_number1" name="card_number" value="" size="30" type="text" maxlength="19" class="input-text" autocomplete="off" />
 			</p>
 			<p class="form-row form-row-last">
-				<label for="card_type"><?php _e( 'Card Type', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?> <span class="required">*</span></label>
+				<label for="card_type"><?php _e( 'Card Type', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?> <span class="required">*</span></label>
 				<select name="card_type" id="card_type1" style="width:auto;"><br>
 					<option value="">
 					<?php
 						foreach ( $this->card_type as $type ) :
 							if ( isset( $this->card_type_options[ $type ] ) ) :
 								?>
-								<option value="<?php echo esc_attr( preg_replace( '/-.*$/', '', $type ) ); ?>" rel="<?php echo esc_attr( $type ); ?>"><?php _e( $this->card_type_options[ $type ], WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?></option>
+								<option value="<?php echo esc_attr( preg_replace( '/-.*$/', '', $type ) ); ?>" rel="<?php echo esc_attr( $type ); ?>"><?php _e( $this->card_type_options[ $type ], WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?></option>
 								<?php
 							endif;
 						endforeach;
@@ -359,7 +359,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 			</p>
 			<div class="clear"></div>
 			<p class="form-row form-row-first">
-				<label for="card_expiry_month"><?php _e( 'Expiration Date', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?> <span class="required">*</span></label>
+				<label for="card_expiry_month"><?php _e( 'Expiration Date', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?> <span class="required">*</span></label>
 				<select id="card_expiry_month" style="width:auto;">
 					<option value=""><?php _e( 'Month', 'wc_elavon' ) ?></option>
 					<?php foreach ( range( 1, 12 ) as $month ) : ?>
@@ -374,9 +374,9 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 				</select>
 			</p>
 			<p class="form-row form-row-last">
-				<?php if ( $this->display_ssl_seal() ) : ?><img id="cybersource_sop_ssl_seal" style="float:right;box-shadow:none;" src="<?php echo $wc_cybersource_secure_acceptance_sop->plugin_url() . '/images/seal-ssl.png' ?>" /><?php endif; ?>
-				<?php if ( $this->display_bank_logo() ) : ?><img id="cybersource_sop_bank_logo" style="float:right;box-shadow:none;" src="<?php echo $wc_cybersource_secure_acceptance_sop->plugin_url() . '/images/logo.png' ?>" /><?php endif; ?>
-				<label for="card_cvn" style="float:left;"><?php _e( 'Card Security Code', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?> <span class="required">*</span></label>
+				<?php if ( $this->display_ssl_seal() ) : ?><img id="cybersource_wm_ssl_seal" style="float:right;box-shadow:none;" src="<?php echo $wc_cybersource_secure_acceptance_wm->plugin_url() . '/images/seal-ssl.png' ?>" /><?php endif; ?>
+				<?php if ( $this->display_bank_logo() ) : ?><img id="cybersource_wm_bank_logo" style="float:right;box-shadow:none;" src="<?php echo $wc_cybersource_secure_acceptance_wm->plugin_url() . '/images/logo.png' ?>" /><?php endif; ?>
+				<label for="card_cvn" style="float:left;"><?php _e( 'Card Security Code', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?> <span class="required">*</span></label>
 				<input id="card_cvn1" style="float:left;clear:left;display:block;width:auto;" name="card_cvn" size="4" type="text" maxlength="4" class="input-text" autocomplete="off" style="width:auto;" />
 			</p>
 			<div class="clear"></div>
@@ -386,8 +386,8 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 		</ul>
 		</div>
 
-		<p><?php _e( '<strong>Important:</strong> All fields with <span class="required">*</span> are required.', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?></p>
-		<input type="submit" name="confirm_pay" value="<?php _e( 'Confirm and Pay', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ) ?>" class="button alt" /> <a href="<?php echo $this->get_payment_page_url( $order, true ) ?>"><?php _e( 'Back', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ) ?></a>
+		<p><?php _e( '<strong>Important:</strong> All fields with <span class="required">*</span> are required.', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?></p>
+		<input type="submit" name="confirm_pay" value="<?php _e( 'Confirm and Pay', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ) ?>" class="button alt" /> <a href="<?php echo $this->get_payment_page_url( $order, true ) ?>"><?php _e( 'Back', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ) ?></a>
 	</form>
 
 	<script type="text/javascript">
@@ -408,7 +408,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 			}
 		?>
 
-			$('form.checkout_cybersource_sop').submit(function()
+			$('form.checkout_cybersource_wm').submit(function()
 			{
 				var form = $(this);
 
@@ -424,20 +424,20 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 
 				if (!cardType)
 				{
-					errors.push("<?php _e( 'Please Select A Card Type', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?>");
+					errors.push("<?php _e( 'Please Select A Card Type', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?>");
 				}
 
 				if (!cvNumber)
 				{
-					errors.push("<?php _e( 'Card Security Code (CVV or CVN) Is Missing', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?>");
+					errors.push("<?php _e( 'Card Security Code (CVV or CVN) Is Missing', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?>");
 				} else if (/\D/.test(cvNumber))
 				
 				{
-					errors.push("<?php _e( 'Card Security Code Is Invalid (ONLY Digits Are Allowed)', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?>");
+					errors.push("<?php _e( 'Card Security Code Is Invalid (ONLY Digits Are Allowed)', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?>");
 				} else if ( (3 != cvNumber.length && ['001', '002', '042'].indexOf(cardType) > -1) || (4 != cvNumber.length && '003' == cardType) )
 				
 				{
-					errors.push("<?php _e( 'Card Security Code Is Invalid (Wrong Length)', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?>");
+					errors.push("<?php _e( 'Card Security Code Is Invalid (Wrong Length)', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?>");
 				}
 
 				var currentYear = new Date().getFullYear();
@@ -447,17 +447,17 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 					expirationYear < currentYear ||
 					expirationYear > currentYear + 20 )
 				{
-					errors.push("<?php _e( 'Card Expiration Date Is Invalid', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?>");
+					errors.push("<?php _e( 'Card Expiration Date Is Invalid', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?>");
 				}
 
 				accountNumber = accountNumber.replace(/-|\s/g, '');  // replace any dashes or spaces in the card number
 				if (!accountNumber)
 				{
-					errors.push("<?php _e( 'Missing Credit Card Number', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?>");
+					errors.push("<?php _e( 'Missing Credit Card Number', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?>");
 				} else if (accountNumber.length < 12 || accountNumber.length > 19 || /\D/.test(accountNumber) || !luhnCheck(accountNumber))
 				
 				{
-					errors.push("<?php _e( 'Card Number Is Invalid', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?>");
+					errors.push("<?php _e( 'Card Number Is Invalid', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?>");
 				}
 
 				if (errors.length > 0)
@@ -492,7 +492,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 
 				form.addClass('processing').block(
 				{
-					message: '<img src="<?php echo esc_url( $wc_cybersource_secure_acceptance_sop->plugin_url() ); ?>/images/ajax-loader.gif" alt="Redirecting&hellip;" style="float:left; margin-right: 10px; box-shadow:none;" /><?php echo esc_js( 'Thank you for your order.  Please do not refresh your browser or click "back" while we are processing your payment otherwise you may be charged twice.', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?>',
+					message: '<img src="<?php echo esc_url( $wc_cybersource_secure_acceptance_wm->plugin_url() ); ?>/images/ajax-loader.gif" alt="Redirecting&hellip;" style="float:left; margin-right: 10px; box-shadow:none;" /><?php echo esc_js( 'Thank you for your order.  Please do not refresh your browser or click "back" while we are processing your payment otherwise you may be charged twice.', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?>',
 					overlayCSS:
 					{
 						background: "#fff",
@@ -544,7 +544,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 	 */
 	public function cybersource_response()
 	{
-		global $woocommerce, $wc_cybersource_secure_acceptance_sop;
+		global $woocommerce, $wc_cybersource_secure_acceptance_wm;
 		
 		// Array for CyberSource Reason Codes sent with every transaction request.
 		$reasonCodes = array(
@@ -578,7 +578,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 			'520' => 'The authorization request was approved by the issuing bank but declined by CyberSource based on your legacy Smart authorization settings. <p style=\"color: #FF0000;\"><strong>Possible Action: review the authorization request.</strong></p>',
 		);
 
-		// the api url is shared with the SOP echeck plugin, so make sure this is a card transaction before going any further
+		// the api url is shared with the WM echeck plugin, so make sure this is a card transaction before going any further
 		if ( ! isset( $_POST['req_payment_method'] ) || 'card' != $_POST['req_payment_method'] ) return;
 
 		// Include the Security file that is used to sign the API fields
@@ -616,9 +616,9 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 			if ( 'completed' == $order->status || 'processing' == $order->status )
 			{
 				// Log the transaction details to the LOG file.
-				if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_sop->log( sprintf( "Possible Duplicate, Order %s has already been processed", $order->id ) );
+				if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_wm->log( sprintf( "Possible Duplicate, Order %s has already been processed", $order->id ) );
 
-				$order_note = __( 'Duplicate transaction received:', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN );
+				$order_note = __( 'Duplicate transaction received:', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN );
 				$order->add_order_note( $order_note );
 
 				wp_redirect( $this->get_return_url( $order ) );
@@ -636,9 +636,9 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 
 				CASE "ACCEPT":
 
-					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_sop->log( sprintf( "Order %s has being processed successfully.", $order->id ) );
+					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_wm->log( sprintf( "Order %s has being processed successfully.", $order->id ) );
 					// Add a note that goes with the transaction from CyberSource
-					$order_note = sprintf(__( $reasonCodes[$this->get_post( 'reason_code' )], WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ) );
+					$order_note = sprintf(__( $reasonCodes[$this->get_post( 'reason_code' )], WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ) );
 					$order->add_order_note( $order_note );
 
 					// Payment complete
@@ -656,9 +656,9 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 
 				CASE "DECLINE":
 
-					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_sop->log( sprintf( "Order %s has being DECLINED by Decision Manager.", $order->id ) );
+					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_wm->log( sprintf( "Order %s has being DECLINED by Decision Manager.", $order->id ) );
 					// Place on-hold for the Admin to Review
-					$order_note = sprintf( __( $reasonCodes[$this->get_post( 'reason_code' )], WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ) );
+					$order_note = sprintf( __( $reasonCodes[$this->get_post( 'reason_code' )], WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ) );
 
 					if ( 'failed' != $order->status )
 					{
@@ -681,9 +681,9 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 
 				CASE "REVIEW":
 
-					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_sop->log( sprintf( "Order %s has being placed on-hold because Decision Manager has marked it for REVIEW.", $order->id ) );
+					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_wm->log( sprintf( "Order %s has being placed on-hold because Decision Manager has marked it for REVIEW.", $order->id ) );
 					// Place on-hold for the Admin to Review
-					$order_note = sprintf( __( $reasonCodes[$this->get_post( 'reason_code' )], WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ) );
+					$order_note = sprintf( __( $reasonCodes[$this->get_post( 'reason_code' )], WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ) );
 
 					if ( 'on-hold' != $order->status )
 					{
@@ -706,9 +706,9 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 
 				CASE "ERROR":
 
-					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_sop->log( sprintf( "Possible Error in processing, Order %s . Please check the Cybersource settings.", $order->id ) );
+					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_wm->log( sprintf( "Possible Error in processing, Order %s . Please check the Cybersource settings.", $order->id ) );
 					// Place on Failed for the Admin to Review
-					$order_note = sprintf( __( 'Access denied, page not found, or internal server error: code %s%s', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ), $this->get_post( 'reason_code' ), $error_message );
+					$order_note = sprintf( __( 'Access denied, page not found, or internal server error: code %s%s', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ), $this->get_post( 'reason_code' ), $error_message );
 
 					if ( 'failed' != $order->status )
 					{
@@ -731,9 +731,9 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 
 				CASE "CANCEL":
 
-					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_sop->log( sprintf( "The Order has been cancelled by the customer, Order %s ", $order->id ) );
+					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_wm->log( sprintf( "The Order has been cancelled by the customer, Order %s ", $order->id ) );
 					// Place on Cancelled for the Admin to Review
-					$order_note = sprintf( __( 'The Order has been cancelled by the customer: code %s%s', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ), $this->get_post( 'reason_code' ), $error_message );
+					$order_note = sprintf( __( 'The Order has been cancelled by the customer: code %s%s', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ), $this->get_post( 'reason_code' ), $error_message );
 
 					if ( 'Cancelled' != $order->status )
 					{
@@ -757,10 +757,10 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 				DEFAULT:
 
 					// Log this when a UNKNOWN DECISION is sent through
-					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_sop->log( sprintf( "Unknown Decision sent for Order %s, it has been placed on-hold for investigation", $order->id ) );
+					if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_wm->log( sprintf( "Unknown Decision sent for Order %s, it has been placed on-hold for investigation", $order->id ) );
 
 					// Place order on-hold for the Admin
-					$order_note = sprintf( __( 'Unknown Decision Received from Gateway: ' . $_POST['decision']. ' with reason code %s%s, Please contact the Barclays Bank, Card Centre for Investigations.', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ), $this->get_post( 'reason_code' ), $error_message );
+					$order_note = sprintf( __( 'Unknown Decision Received from Gateway: ' . $_POST['decision']. ' with reason code %s%s, Please contact the Barclays Bank, Card Centre for Investigations.', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ), $this->get_post( 'reason_code' ), $error_message );
 
 					if ( 'on-hold' != $order->status )
 					{
@@ -786,8 +786,8 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 		{
 
 			// Signature Verification failed, response was not properly signed by CyberSource
-			if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_sop->log( sprintf( "Signature Verification failed for this Order " . $params['req_reference_number'] . ", please check CyberSource Settings. Generated signature by this Gateway is: " . sign($params), $order->id ) );
-			echo __( "Error - invalid transaction signature (check CyberSource settings).  Please contact the merchant and provide them with this message.", WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN );
+			if ( $this->log_enabled() ) $wc_cybersource_secure_acceptance_wm->log( sprintf( "Signature Verification failed for this Order " . $params['req_reference_number'] . ", please check CyberSource Settings. Generated signature by this Gateway is: " . sign($params), $order->id ) );
+			echo __( "Error - invalid transaction signature (check CyberSource settings).  Please contact the merchant and provide them with this message.", WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN );
 
 			// Redirect to the Thank You page
 			wp_redirect( $this->get_return_url( $order ), 302 );
@@ -827,7 +827,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 		{
 			?>
 			<li class="wide" style="text-align: center;">
-				<a class="button tips" href="<?php echo esc_url( $url ); ?>" target="_blank" data-tip="<?php _e( 'View this transaction in the CyberSource Business Center', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?>" style="cursor: pointer !important;"><?php _e( 'View in CyberSource', WC_Cybersource_Secure_Acceptance_SOP::TEXT_DOMAIN ); ?></a>
+				<a class="button tips" href="<?php echo esc_url( $url ); ?>" target="_blank" data-tip="<?php _e( 'View this transaction in the CyberSource Business Center', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?>" style="cursor: pointer !important;"><?php _e( 'View in CyberSource', WC_Cybersource_Secure_Acceptance_WM::TEXT_DOMAIN ); ?></a>
 			</li>
 			<?php
 		}
@@ -838,17 +838,17 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 
 
 	/**
-	 * Log the CyberSource request to woocommerce/logs/cybersource_secure_acceptance_sop.txt
+	 * Log the CyberSource request to woocommerce/logs/cybersource_secure_acceptance_wm.txt
 	 *
 	 * @param string $title the title to display
 	 */
 	private function log_request( $title )
 	{
-		global $wc_cybersource_secure_acceptance_sop;
+		global $wc_cybersource_secure_acceptance_wm;
 
 		$response = $_POST;
 		unset( $response['wc-api'] );
-		$wc_cybersource_secure_acceptance_sop->log( $title . "\n" . print_r( $response, true ) );
+		$wc_cybersource_secure_acceptance_wm->log( $title . "\n" . print_r( $response, true ) );
 	}
 
 
@@ -1042,7 +1042,7 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 	{	
 		if( $this->is_device_finger_print_enabled() )
 		{
-			global $woocommerce, $wc_cybersource_secure_acceptance_sop;
+			global $woocommerce, $wc_cybersource_secure_acceptance_wm;
 			$order = wc_get_order( $order_id );
 			return $order->id . substr( $order->order_key,9 );
 		}
@@ -1208,4 +1208,4 @@ class WC_Gateway_Cybersource_Secure_Acceptance_SOP extends WC_Payment_Gateway {
 	}
 */
 
-} // End of WC_Cybersource_Secure_Acceptance_SOP Class
+} // End of WC_Cybersource_Secure_Acceptance_WM Class
